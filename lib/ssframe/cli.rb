@@ -14,7 +14,7 @@ module Ssframe
           {"2-calendar" => "Mit dem gesamten Kalender\nbehalten Sie immer den Überblick"}
         ]
       }
-      puts Ssframe::Framer.frame(titles_config, ['iPhone X'], "#69c748")
+      Ssframe::Framer.frame(titles_config, ['iPhone X'], "#69c748", "font.otf")
     end
   end
 end
