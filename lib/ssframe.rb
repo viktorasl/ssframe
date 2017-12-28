@@ -2,5 +2,5 @@ require "ssframe/version"
 require "ssframe/framer"
 
 module Ssframe
-  # Your code goes here...
+  ASSETS_DIR = Pathname.new(File.expand_path('../assets', __FILE__))
 end
