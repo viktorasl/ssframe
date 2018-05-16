@@ -1,24 +1,13 @@
+require_relative 'screenshots_locator'
+require_relative 'frame_config'
+
 module Ssframe
   class Framer
-
-    def self.default_config()
-      return {
-        'iPhone X' => {
-          :size => [1125, 2436],
-          :framed_width => 1120,
-          :bottom_margin => -120,
-          :text_center_y => -1010,
-          :text_point_size => 60,
-          :text_color => 'white',
-          :frame_name => 'Apple iPhone X Silver.png'
-        }
-      }
-    end
 
     def self.frame_screenshot(src_path, dst_path, text_font, title, bg_color, device)
       require 'mini_magick'
 
-      device_config = default_config[device]
+      device_config = Ssframe::FrameConfig.default[device]
       size = device_config[:size]
       im_size = "#{size[0]}!x#{size[1]}!"
       framed_width = device_config[:framed_width]
@@ -77,6 +66,14 @@ module Ssframe
             break
           end
         end
+      end
+    end
+
+    def self.frame_in_directory(dir, config, bg_color, text_font, ssframe_base='./ssframe/')
+      for lang, device, screen, path in ScreenhotsLocator.structure_in_directory(dir) do
+        dst_path = File.join(ssframe_base, lang, "#{device}-#{screen}.png")
+        title = config[lang][screen]
+        frame_screenshot(path, dst_path, text_font, title, bg_color, device)
       end
     end
   end
