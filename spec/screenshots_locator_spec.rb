@@ -18,4 +18,10 @@ describe Ssframe::ScreenshotsLocator do
       ["it", "iPhone X", "calendar", "spec/fixtures/screens/it/iPhone X-calendar.png"]
     ])
   end
+
+  it "skips invalid configuration screenshots" do
+    expect(
+      Ssframe::ScreenshotsLocator.structure_in_directory("spec/fixtures/screens_invalid")
+    ).to match_array([])
+  end
 end

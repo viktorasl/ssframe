@@ -70,7 +70,7 @@ module Ssframe
     end
 
     def self.frame_in_directory(dir, config, bg_color, text_font, ssframe_base='./ssframe/')
-      for lang, device, screen, path in ScreenhotsLocator.structure_in_directory(dir) do
+      for lang, device, screen, path in Ssframe::ScreenshotsLocator.structure_in_directory(dir) do
         dst_path = File.join(ssframe_base, lang, "#{device}-#{screen}.png")
         title = config[lang][screen]
         frame_screenshot(path, dst_path, text_font, title, bg_color, device)

@@ -15,13 +15,17 @@ module Ssframe
       supported_config = Ssframe::FrameConfig.default.map { |k, _| k }
       localization_dirs(dir).flat_map do |lang_dir|
         abs_dir = File.join(dir, lang_dir)
-        Dir["#{abs_dir}/*.png"].map do |ss|
+        formed_config = Dir["#{abs_dir}/*.png"].map do |ss|
           base_ss = File.basename(ss, ".*")
           device = supported_config.select { |c| base_ss.start_with?("#{c}-") }.first
-          return [] if device == nil
-          base_ss.slice!("#{device}-")
-          [lang_dir, device, base_ss, ss]
+          if device == nil
+            nil
+          else
+            base_ss.slice!("#{device}-")
+            [lang_dir, device, base_ss, ss]
+          end
         end
+        formed_config.select { |e| e != nil }
       end
     end
   end
