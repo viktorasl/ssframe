@@ -1,10 +1,11 @@
+require 'json'
 require_relative 'screenshots_locator'
 require_relative 'frame_config'
 
 module Ssframe
   class Framer
 
-    def self.frame_screenshot(src_path, dst_path, text_font, title, bg_color, device)
+    def self.frame_screenshot(src_path, dst_path, text_font, title, bg_config, device)
       require 'mini_magick'
 
       device_config = Ssframe::FrameConfig.default[device]
@@ -17,11 +18,15 @@ module Ssframe
       text_color = device_config[:text_color]
       frame_name = device_config[:frame_name]
 
-      empty_path = File.join(Ssframe::ASSETS_DIR, "empty.png")
-      background = MiniMagick::Image.open(empty_path).combine_options do |i|
-        i.resize im_size
-        i.fill bg_color
-        i.draw "color 0,0 reset"
+      if bg_config.start_with?("#")
+        empty_path = File.join(Ssframe::ASSETS_DIR, "empty.png")
+        background = MiniMagick::Image.open(empty_path).combine_options do |i|
+          i.resize im_size
+          i.fill bg_config
+          i.draw "color 0,0 reset"
+        end
+      else
+        background = MiniMagick::Image.open(bg_config)
       end
       frame_path = File.join(Ssframe::FRAMES_DIR, frame_name)
       frame = MiniMagick::Image.open(frame_path)
@@ -69,11 +74,17 @@ module Ssframe
       end
     end
 
-    def self.frame_in_directory(dir, config, bg_color, text_font, ssframe_base='./ssframe/')
+    def self.frame_in_directory(dir, config, text_font, ssframe_base='./ssframe/')
+      ssframe_config = JSON.parse(File.read("ssframe.json"))
       for lang, device, screen, path in Ssframe::ScreenshotsLocator.structure_in_directory(dir) do
         dst_path = File.join(ssframe_base, lang, "#{device}-#{screen}.png")
         title = config[lang][screen]
-        frame_screenshot(path, dst_path, text_font, title, bg_color, device)
+        if !ssframe_config["backgrounds_directory"].nil?
+          background = File.join(".", ssframe_config["backgrounds_directory"], device, "#{screen}.png") 
+        else
+          background = ssframe_config["background_color"]
+        end
+        frame_screenshot(path, dst_path, text_font, title, background, device)
       end
     end
   end

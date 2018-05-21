@@ -11,12 +11,12 @@ module Ssframe
       Ssframe::Framer.frame(titles_config, ['iPhone X'], "#b50039", "font.otf")
     end
 
-    desc "frame_in_dir DIR_PATH TEXTS COLOR", """
+    desc "frame_in_dir DIR_PATH TEXTS", """
     Frames screenshots in provided directory where screenshots appear contained in localization directories
     """
-    def frame_in_dir(dir, texts_config, color)
+    def frame_in_dir(dir, texts_config)
       config = JSON.parse(File.read(texts_config))
-      Ssframe::Framer.frame_in_directory(dir, config, color, "font.otf")
+      Ssframe::Framer.frame_in_directory(dir, config, "font.otf")
     end
   end
 end
