@@ -26,7 +26,7 @@ module Ssframe
       else
         background = MiniMagick::Image.open(bg_config)
       end
-      frame_path = File.join(Ssframe::FRAMES_DIR, frame_name)
+      frame_path = File.join("frames", frame_name)
       frame = MiniMagick::Image.open(frame_path)
 
       screenshot = MiniMagick::Image.open(src_path)
