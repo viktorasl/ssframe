@@ -1,5 +1,3 @@
-require_relative 'frame_config'
-
 module Ssframe
   class ScreenshotsLocator
 
@@ -11,8 +9,8 @@ module Ssframe
       end
     end
 
-    def self.structure_in_directory(dir)
-      supported_config = Ssframe::FrameConfig.default.map { |k, _| k }
+    def self.structure_in_directory(dir, devices_config)
+      supported_config = devices_config.map { |k, _| k }
       localization_dirs(dir).flat_map do |lang_dir|
         abs_dir = File.join(dir, lang_dir)
         formed_config = Dir["#{abs_dir}/*.png"].map do |ss|

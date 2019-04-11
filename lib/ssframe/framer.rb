@@ -1,22 +1,20 @@
 require 'json'
 require_relative 'screenshots_locator'
-require_relative 'frame_config'
 
 module Ssframe
   class Framer
 
-    def self.frame_screenshot(src_path, dst_path, text_font, title, bg_config, device)
+    def self.frame_screenshot(src_path, dst_path, text_font, title, bg_config, device_config)
       require 'mini_magick'
 
-      device_config = Ssframe::FrameConfig.default[device]
-      size = device_config[:size]
+      size = device_config['size']
       im_size = "#{size[0]}!x#{size[1]}!"
-      framed_width = device_config[:framed_width]
-      bottom_margin = "%+d" % device_config[:bottom_margin]
-      text_center_y = device_config[:text_center_y]
-      text_point_size = device_config[:text_point_size]
-      text_color = device_config[:text_color]
-      frame_name = device_config[:frame_name]
+      framed_width = device_config['framed_width']
+      bottom_margin = "%+d" % device_config['bottom_margin']
+      text_center_y = device_config['text_center_y']
+      text_point_size = device_config['text_point_size']
+      text_color = device_config['text_color']
+      frame_name = device_config['frame_name']
 
       if bg_config.start_with?("#")
         empty_path = File.join(Ssframe::ASSETS_DIR, "empty.png")
@@ -60,13 +58,15 @@ module Ssframe
     end
 
     def self.frame(config, devices, bg_color, text_font, screenhosts_base='./screenshots/', ssframe_base='./ssframe/')
+      devices_config = JSON.parse(File.read("devices.json"))
+
       for lang, titles in config do
         for title_config in titles do
           for f_name, title in title_config do
             for device in devices do
               src_path = File.join(screenhosts_base, lang, "#{device}-#{f_name}.png")
               dst_path = File.join(ssframe_base, lang, "#{device}-#{f_name}.png")
-              frame_screenshot(src_path, dst_path, text_font, title, bg_color, device)
+              frame_screenshot(src_path, dst_path, text_font, title, bg_color, devices_config[device])
             end
             break
           end
@@ -76,15 +76,18 @@ module Ssframe
 
     def self.frame_in_directory(dir, config, text_font, ssframe_base='./ssframe/')
       ssframe_config = JSON.parse(File.read("ssframe.json"))
-      for lang, device, screen, path in Ssframe::ScreenshotsLocator.structure_in_directory(dir) do
+      devices_config = JSON.parse(File.read("devices.json"))
+      
+      for lang, device, screen, path in Ssframe::ScreenshotsLocator.structure_in_directory(dir, devices_config) do
         dst_path = File.join(ssframe_base, lang, "#{device}-#{screen}.png")
         title = config[lang][screen]
-        if !ssframe_config["backgrounds_directory"].nil?
-          background = File.join(".", ssframe_config["backgrounds_directory"], device, "#{screen}.png") 
+        backgrounds_dir = ssframe_config["backgrounds_directory"]
+        if !backgrounds_dir.nil?
+          background = File.join(".", backgrounds_dir, device, "#{screen}.png") 
         else
           background = ssframe_config["background_color"]
         end
-        frame_screenshot(path, dst_path, text_font, title, background, device)
+        frame_screenshot(path, dst_path, text_font, title, background, devices_config[device])
       end
     end
   end
