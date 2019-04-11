@@ -1,6 +1,7 @@
 require "thor"
 require "ssframe"
 require "json"
+require "frameit"
 
 module Ssframe
   class CLI < Thor
@@ -17,6 +18,13 @@ module Ssframe
     def frame_in_dir(dir, texts_config)
       config = JSON.parse(File.read(texts_config))
       Ssframe::Framer.frame_in_directory(dir, config, "font.otf")
+    end
+
+    desc "download_frames", """
+    Downloads device frames
+    """
+    def download_frames
+      Frameit::FrameDownloader.new.download_frames
     end
   end
 end
