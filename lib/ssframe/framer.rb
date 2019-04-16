@@ -57,23 +57,6 @@ module Ssframe
       composed_image.write(dst_path)
     end
 
-    def self.frame(config, devices, bg_color, text_font, screenhosts_base='./screenshots/', ssframe_base='./ssframe/')
-      devices_config = JSON.parse(File.read("devices.json"))
-
-      for lang, titles in config do
-        for title_config in titles do
-          for f_name, title in title_config do
-            for device in devices do
-              src_path = File.join(screenhosts_base, lang, "#{device}-#{f_name}.png")
-              dst_path = File.join(ssframe_base, lang, "#{device}-#{f_name}.png")
-              frame_screenshot(src_path, dst_path, text_font, title, bg_color, devices_config[device])
-            end
-            break
-          end
-        end
-      end
-    end
-
     def self.frame_in_directory(dir, config, text_font, ssframe_base='./ssframe/')
       ssframe_config = JSON.parse(File.read("ssframe.json"))
       devices_config = JSON.parse(File.read("devices.json"))
