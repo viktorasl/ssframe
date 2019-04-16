@@ -20,12 +20,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "thor"
-  spec.add_dependency "mini_magick"
+  spec.add_dependency "thor", "~> 0.20.0"
+  spec.add_dependency "mini_magick", "~> 4.0"
   
-  spec.add_development_dependency "bundler", "~> 1.16"
+  spec.add_development_dependency "bundler", "~> 1.0"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", '~> 3.5'
-  spec.add_development_dependency "cucumber"
-  spec.add_development_dependency "aruba"
+  spec.add_development_dependency "rspec", "~> 3.5.0"
+  spec.add_development_dependency "cucumber", "~> 3.1"
+  spec.add_development_dependency "aruba", "~> 0.14.0"
 end
